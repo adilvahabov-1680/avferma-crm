@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Təsərrüfat CRM | AV Systems</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=20260615-sync">
+</head>
+<body>
+  <section class="login-screen" id="loginScreen" aria-label="Sistemə giriş">
+    <div class="login-card">
+      <div class="login-brand">
+        <div class="brand-logo">AV</div>
+        <div>
+          <strong>Təsərrüfat CRM</strong>
+          <span>AV Systems</span>
+        </div>
+      </div>
+      <div class="login-copy">
+        <p class="eyebrow">İşçi girişi</p>
+        <h1>Sistemə daxil olun</h1>
+        <p>Hər işçi yalnız sahibkar tərəfindən verilən bölmələri və əməliyyatları görə bilər.</p>
+      </div>
+      <form id="loginForm" class="login-form">
+        <div class="field">
+          <label for="loginUsername">Login</label>
+          <input id="loginUsername" name="username" autocomplete="username" required>
+        </div>
+        <div class="field">
+          <label for="loginPassword">Parol</label>
+          <input id="loginPassword" name="password" type="password" autocomplete="current-password" required>
+        </div>
+        <button class="primary-button" type="submit">Daxil ol</button>
+        <p class="login-hint">İlk giriş üçün Sahibkar: <strong>admin</strong> / <strong>admin123</strong></p>
+      </form>
+    </div>
+  </section>
+
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand-block">
+        <div class="brand-logo" id="sidebarLogo">AV</div>
+        <div>
+          <div class="brand-title">Təsərrüfat CRM</div>
+          <div class="brand-subtitle">AV Systems</div>
+        </div>
+      </div>
+
+      <nav class="nav-menu" id="navMenu" aria-label="Əsas menyu"></nav>
+
+      <div class="sidebar-footer">
+        <div class="season-label">Mövsüm</div>
+        <div class="season-value" id="sidebarSeason">2026 Çiyələk</div>
+      </div>
+    </aside>
+
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+
+    <main class="main-area">
+      <header class="topbar">
+        <button class="icon-button mobile-menu-button" id="mobileMenuButton" type="button" aria-label="Menyunu aç">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <div class="page-heading">
+          <div class="eyebrow" id="currentSectionEyebrow">AV Systems</div>
+          <h1 id="pageTitle">Ana səhifə</h1>
+        </div>
+
+        <div class="topbar-tools">
+          <span class="sync-status" id="syncStatus" data-state="offline">Yerli yaddaş</span>
+          <button class="ghost-button top-logout-button" id="logoutButton" type="button">Çıxış</button>
+        </div>
+      </header>
+
+      <section class="content-area" id="contentArea"></section>
+
+      <footer class="app-footer">
+        <span>Created by AV Systems</span>
+      </footer>
+    </main>
+  </div>
+
+  <nav class="mobile-quick-actions" id="mobileQuickActions" aria-label="Sürətli əməliyyatlar">
+    <button type="button" data-quick-action="dashboard">
+      <span>⌂</span>
+      <strong>Ana səhifə</strong>
+    </button>
+    <button type="button" data-quick-action="harvest">
+      <span>kg</span>
+      <strong>Məhsul</strong>
+    </button>
+    <button type="button" data-quick-action="sale">
+      <span>₼</span>
+      <strong>Satış</strong>
+    </button>
+    <button type="button" data-quick-action="expense">
+      <span>+</span>
+      <strong>Xərc</strong>
+    </button>
+  </nav>
+
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header">
+        <div>
+          <div class="modal-kicker" id="modalKicker">CRM</div>
+          <h2 id="modalTitle">Modal</h2>
+        </div>
+        <button class="icon-button close-button" id="modalCloseButton" type="button" aria-label="Bağla">×</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <input type="file" id="backupFileInput" accept="application/json" hidden>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="app.js?v=20260615-sync"></script>
+</body>
+</html>

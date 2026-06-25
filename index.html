@@ -714,6 +714,19 @@ label, .field label {
   transform: translateY(-2px);
 }
 
+.metric-card.clickable {
+  cursor: pointer;
+}
+
+.metric-card.clickable:hover {
+  border-color: var(--primary);
+}
+
+.metric-card.clickable:focus-visible {
+  outline: 3px solid rgba(47, 125, 79, 0.35);
+  outline-offset: 2px;
+}
+
 .metric-top {
   display: flex;
   align-items: flex-start;
@@ -2324,6 +2337,7 @@ const expenseCategories = [
 ];
 
 const manualExpenseCategories = [
+  "Maaşlar",
   "Torpaq hazırlığı",
   "Gübrələr",
   "Su",
@@ -2336,6 +2350,7 @@ const manualExpenseCategories = [
 ];
 
 const expenseCategoryFields = {
+  "Maaşlar": [],
   "Torpaq hazırlığı": ["supplier", "land", "note"],
   "Gübrələr": ["supplier", "land", "note"],
   "Su": ["period", "land", "note"],
@@ -3326,7 +3341,7 @@ function renderDashboard() {
       </div>
       <div class="dashboard-grid primary-dashboard-grid">
         ${metrics.map((metric) => `
-        <article class="metric-card">
+        <article class="metric-card${metric.quickAdd ? " clickable" : ""}" ${metric.quickAdd ? `data-quick-add="${metric.quickAdd}" role="button" tabindex="0"` : ""}>
           <div class="metric-top">
             <div class="metric-title">${metric.title}</div>
             <div class="metric-icon">${iconSvg(metric.icon)}</div>
@@ -3378,6 +3393,19 @@ function renderDashboard() {
   `;
 
   bindPeriodControls("dashboard");
+  document.querySelectorAll("[data-quick-add]").forEach((card) => {
+    const open = () => {
+      if (card.dataset.quickAdd === "salary") openSalaryModal();
+      if (card.dataset.quickAdd === "fertilizer") openExpenseModal(null, "Gübrələr");
+    };
+    card.addEventListener("click", open);
+    card.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        open();
+      }
+    });
+  });
 }
 
 function getPrimaryDashboardMetrics(periodMetrics = getPeriodMainMetrics()) {
@@ -3394,10 +3422,10 @@ function getPrimaryDashboardMetrics(periodMetrics = getPeriodMainMetrics()) {
     { title: "Məhsul qalığı", value: `${stockKg.toLocaleString("az-AZ")} kg`, note: "Kalibrlər üzrə anbar qalığı", icon: "stock" },
     { title: "Müştəri borcları", value: formatMoney(periodMetrics.customerDebt), note: "Satışlardan qalan borc", icon: "debts" },
     { title: "Bu ayın satışı", value: formatMoney(monthSales), note: "Cari ay üzrə ümumi satış", icon: "sales" },
-    { title: "Maaş xərci (həftə)", value: formatMoney(sumExpensesByCategoryForDays("Maaşlar", 7)), note: "Son 7 gün", icon: "salary" },
-    { title: "Maaş xərci (ay)", value: formatMoney(sumExpensesByCategoryForMonth("Maaşlar")), note: "Cari ay", icon: "salary" },
-    { title: "Gübrə xərci (həftə)", value: formatMoney(sumExpensesByCategoryForDays("Gübrələr", 7)), note: "Son 7 gün", icon: "fertilizer" },
-    { title: "Gübrə xərci (ay)", value: formatMoney(sumExpensesByCategoryForMonth("Gübrələr")), note: "Cari ay", icon: "fertilizer" }
+    { title: "Maaş xərci (həftə)", value: formatMoney(sumExpensesByCategoryForDays("Maaşlar", 7)), note: "Son 7 gün · klikləyib əlavə et", icon: "salary", quickAdd: "salary" },
+    { title: "Maaş xərci (ay)", value: formatMoney(sumExpensesByCategoryForMonth("Maaşlar")), note: "Cari ay · klikləyib əlavə et", icon: "salary", quickAdd: "salary" },
+    { title: "Gübrə xərci (həftə)", value: formatMoney(sumExpensesByCategoryForDays("Gübrələr", 7)), note: "Son 7 gün · klikləyib əlavə et", icon: "fertilizer", quickAdd: "fertilizer" },
+    { title: "Gübrə xərci (ay)", value: formatMoney(sumExpensesByCategoryForMonth("Gübrələr")), note: "Cari ay · klikləyib əlavə et", icon: "fertilizer", quickAdd: "fertilizer" }
   ];
 }
 
@@ -5777,10 +5805,10 @@ function openSalaryModal(id = null, presetWorkerId = "") {
   bindCloseButtons();
 }
 
-function openExpenseModal(id = null) {
+function openExpenseModal(id = null, presetCategory = null) {
   const expense = appData.expenses.find((item) => item.id === id) || {
     date: todayISO(),
-    category: "Digər",
+    category: presetCategory || "Digər",
     amount: 0,
     currency: "AZN",
     paymentMethod: "nağd",
@@ -5912,6 +5940,12 @@ function openExpenseModal(id = null) {
   });
   const updateExpenseFields = () => {
     const category = document.getElementById("expenseCategory")?.value || "Digər";
+    if (category === "Maaşlar") {
+      closeModal();
+      openSalaryModal();
+      showToast("Maaş ödənişləri üçün xüsusi forma açıldı (gündəlik/aylıq seçimi ilə).", "success");
+      return;
+    }
     const visible = new Set(expenseCategoryFields[category] || expenseCategoryFields["Digər"]);
     document.querySelectorAll(".expense-dynamic-field").forEach((field) => {
       field.hidden = !visible.has(field.dataset.expenseField);
